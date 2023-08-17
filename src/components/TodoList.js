@@ -1,19 +1,35 @@
-import TodoItem from "./TotoItem";
+import TodoItem from "./TodoItem";
+import EditTodo from "./EditTodo";
 
-function TodoList({ todoList, deleteTodo }) {
+export default function TodoList({
+  todoList,
+  deleteTodo,
+  toggleTodo,
+  toggleTodoEdit,
+  editTodo,
+}) {
   return todoList.length ? (
     <ul>
-      {todoList.map((todo) => (
-        <TodoItem
-          key={todo.id}
-          deleteTodo={() => deleteTodo(todo.id)}
-          todo={todo}
-        />
-      ))}
+      {todoList.map((todo) =>
+        todo.edit ? (
+          <EditTodo
+            key={todo.id}
+            todo={todo}
+            editTodo={(content) => editTodo(todo.id, content)}
+            cancelEditTodo={() => toggleTodoEdit(todo.id)}
+          />
+        ) : (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            deleteTodo={() => deleteTodo(todo.id)}
+            toggleTodo={() => toggleTodo(todo.id)}
+            editTodo={() => toggleTodoEdit(todo.id)}
+          />
+        )
+      )}
     </ul>
   ) : (
-    <p>Aucune todo pour le moment</p>
+    <p>Aucune tâche en cours </p>
   );
 }
-
-export default TodoList;
