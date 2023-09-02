@@ -10,7 +10,7 @@ function App() {
     let ignore = false;
     async function fetchTodoList() {
       try {
-        const reponse = await fetch("https://restapi.fr/api/todo");
+        const reponse = await fetch("https://restapi.fr/api/salut");
         if (reponse.ok) {
           const todos = await reponse.json();
           if (!ignore) {
