@@ -1,88 +1,67 @@
-import { useReducer } from "react";
+import React, { useState } from "react";
 import TodoList from "./components/TodoList";
 import AddTodo from "./components/AddTodo";
-import ThemeContext from "./context/ThemeContext";
-import todoReducer from "./reducers/todoReducer";
 
 function App() {
-  const [state, dispatch] = useReducer(todoReducer, {
-    theme: "primary",
-    todoList: [],
-  });
+  const [todoList, setTodoList] = useState([]);
 
-  function addTodo(content) {
-    dispatch({
-      type: "ADD_TODO",
-      content,
-    });
+  function addTodo(todo) {
+    setTodoList([...todoList, todo]);
   }
 
   function deleteTodo(id) {
-    dispatch({
-      type: "DELETE_TODO",
-      id,
-    });
+    setTodoList(todoList.filter((todo) => todo._id !== id));
   }
 
   function toggleTodo(id) {
-    dispatch({
-      type: "TOGGLE_TODO",
-      id,
-    });
+    setTodoList(
+      todoList.map((todo) =>
+        todo._id === id ? { ...todo, done: !todo.done } : todo
+      )
+    );
   }
 
   function toggleTodoEdit(id) {
-    dispatch({
-      type: "TOGGLE_EDIT_TODO",
-      id,
-    });
+    setTodoList(
+      todoList.map((todo) =>
+        todo._id === id ? { ...todo, edit: !todo.edit } : todo
+      )
+    );
   }
 
   function editTodo(id, content) {
-    dispatch({
-      type: "EDIT_TODO",
-      id,
-      content,
-    });
+    setTodoList(
+      todoList.map((todo) =>
+        todo._id === id ? { ...todo, edit: false, content } : todo
+      )
+    );
   }
 
   function selectTodo(id) {
-    dispatch({
-      type: "SELECT_TODO",
-      id,
-    });
-  }
-
-  function handleThemeChange(e) {
-    dispatch({
-      type: "SET_THEME",
-      theme: e.target.value,
-    });
+    setTodoList(
+      todoList.map((todo) =>
+        todo._id === id
+          ? { ...todo, selected: !todo.selected }
+          : { ...todo, selected: false }
+      )
+    );
   }
 
   return (
-    <ThemeContext.Provider value={state.theme}>
-      <div className="d-flex justify-content-center align-items-center p-20">
-        <div className="card container p-20">
-          <h1 className="mb-20 d-flex justify-content-center align-items-center">
-            <span className="flex-fill">Liste de tâches</span>
-            <select value={state.theme} onChange={handleThemeChange}>
-              <option value="primary">Rouge</option>
-              <option value="secondary">Bleu</option>
-            </select>
-          </h1>
-          <AddTodo addTodo={addTodo} />
-          <TodoList
-            todoList={state.todoList}
-            deleteTodo={deleteTodo}
-            toggleTodo={toggleTodo}
-            toggleTodoEdit={toggleTodoEdit}
-            editTodo={editTodo}
-            selectTodo={selectTodo}
-          />
-        </div>
+    <div className="d-flex justify-content-center align-items-center p-20">
+      <div className="card container p-20">
+        <h1 className="mb-20">Liste de tâches</h1>
+        <AddTodo addTodo={addTodo} />
+        <TodoList
+          todoList={todoList}
+          deleteTodo={deleteTodo}
+          toggleTodo={toggleTodo}
+          toggleTodoEdit={toggleTodoEdit}
+          editTodo={editTodo}
+          selectTodo={selectTodo}
+        />
       </div>
-    </ThemeContext.Provider>
+    </div>
   );
 }
 
